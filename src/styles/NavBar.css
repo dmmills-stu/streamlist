@@ -14,7 +14,7 @@
 }
 
 .nav-list li a {
-  display: block;
+  display: flex;
   padding: 0.5rem 1rem;
   background-color: #222;
   border-radius: 0.5rem;

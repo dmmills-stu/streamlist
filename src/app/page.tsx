@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import '../styles/MainPage.css'
+import MovieList from "@/components/MovieList"
+import { Movie } from '@/types/Movie';
 
 const StreamList: React.FC = () => {
   const [streamItem, setStreamItem] = useState('');
-  const [submittedItems, setSubmittedItems] = useState<string[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStreamItem(event.target.value);
@@ -15,7 +17,7 @@ const StreamList: React.FC = () => {
     event.preventDefault();
     if (streamItem.trim() !== '') {
       console.log('User Input:', streamItem);
-      setSubmittedItems([...submittedItems, streamItem]);
+      setMovies([...movies, { title: streamItem, watched: false}]);
       setStreamItem('');
     } else {
       console.log('Error: Empty input submitted.');
@@ -24,44 +26,65 @@ const StreamList: React.FC = () => {
 
   const handleClear = (event: React.FormEvent) => {
     event.preventDefault();
-    setSubmittedItems([]);
+    setMovies([]);
   }
 
+  const handleWatched = (index: number) => {
+    setMovies((prev) =>
+      prev.map((movie, i) =>
+        i === index ? { ...movie, watched: !movie.watched } : movie
+      )
+    );
+  };
+
+  const handleEdit = (index: number) => {
+    const newTitle = prompt("Edit title", movies[index].title);
+    if (newTitle) {
+      setMovies((prev) =>
+        prev.map((movie, i) => (i === index ? { ...movie, title: newTitle } : movie))
+      );
+    }
+  };
+
+  const handleDelete = (index: number) => {
+    setMovies((prev) => prev.filter((_, i) => i !== index));
+  };
+
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-3xl font-bold mb-4">StreamList Application</h1>
-      <div className="max-w-md mx-auto p-4">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
+    <main>
+      <h1>StreamList Application</h1>
+      <div className="form-container">
+        <form onSubmit={handleSubmit}>
           <input
             type="text"
             value={streamItem}
             onChange={handleInputChange}
             placeholder="Enter a movie or show..."
-            className="border border-gray-400 p-2 rounded-md"
           />
-          <div className="flex gap-2 items-center justify-center">
+          <div className="button-div">
             <button
               type="submit"
-              className="bg-red-700 text-white px-10 py-2 mx-4 rounded-md hover:bg-red-800 transition"
+              className="form-button"
             >
               Submit
             </button>
             <button
               type="button"
               onClick={handleClear}
-              className="bg-red-700 text-white py-2 px-10 mx-4 rounded-md hover:bg-red-800 transition"
+              className="form-button"
             >
               Clear List
             </button>
           </div>
         </form>
 
-        {submittedItems && (
-          <ul className="mt-4 list-disc pl-5">
-          {submittedItems.map((item, index) => (
-            <li key={index}>{item}</li>
-          ))}
-          </ul>
+        {movies && (
+          <MovieList
+            movies={movies}
+            onWatched={handleWatched}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
         )}
       </div>
     </main>

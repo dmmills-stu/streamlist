@@ -10,6 +10,23 @@ type MovieListProps = {
 
 const MovieList: React.FC<MovieListProps> = ({ movies, onWatched, onEdit, onDelete }) => (
   <ul className="movie-list">
+    {movies.length > 0 && (
+      <li className="title-list">
+        <span className="button-title">
+          Watched?
+        </span>
+        <span className="title-title">
+          Movie Title
+        </span>
+        <span className="button-title">
+          Edit
+        </span>
+        <span className="button-title">
+          Delete
+        </span>
+      </li>
+    )}
+
     {movies.map((movie, index) => (
       <MovieItem
         key={index}

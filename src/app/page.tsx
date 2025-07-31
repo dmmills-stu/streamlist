@@ -77,6 +77,7 @@ const StreamList: React.FC = () => {
             </button>
           </div>
         </form>
+      </div>
 
         {movies && (
           <MovieList
@@ -86,7 +87,6 @@ const StreamList: React.FC = () => {
             onDelete={handleDelete}
           />
         )}
-      </div>
     </main>
   );
 };

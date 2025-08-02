@@ -1,4 +1,4 @@
-import { Movie } from "../types/Movie"
+import { Movie } from "../types/MovieProps"
 import MovieItem from "./MovieItem"
 
 type MovieListProps = {

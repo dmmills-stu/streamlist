@@ -1,18 +1,30 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/MainPage.css'
 import MovieList from "@/components/MovieList"
-import { Movie } from '@/types/Movie';
+import { Movie } from '@/types/MovieProps';
 
 const StreamList: React.FC = () => {
   const [streamItem, setStreamItem] = useState('');
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [isClient, setIsClient] = useState(false);
 
+  // I opted to use this instead of the useState to load the list to avoid hydration issues.
+  useEffect(() => {
+    const saved = localStorage.getItem('streamListMovies');
+    if (saved) {
+      setMovies(JSON.parse(saved));
+    }
+    setIsClient(true);
+  }, []);
+
+  // Without this, the input for adding a movie will be read-only.
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStreamItem(event.target.value);
   };
 
+  // Adds a new movie to the list.
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (streamItem.trim() !== '') {
@@ -24,11 +36,14 @@ const StreamList: React.FC = () => {
     }
   };
 
+  // Clears the list without saving.
   const handleClear = (event: React.FormEvent) => {
     event.preventDefault();
     setMovies([]);
+    console.log('List cleared.');
   }
 
+  // Flip the boolean for "watched" when clicked.
   const handleWatched = (index: number) => {
     setMovies((prev) =>
       prev.map((movie, i) =>
@@ -37,17 +52,32 @@ const StreamList: React.FC = () => {
     );
   };
 
+  // Removes the movie from the list based on which one was clicked to be deleted.
   const handleDelete = (index: number) => {
     setMovies((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSave = () => {};
+  // Saves the list to localStorage.
+  const handleSave = (updatedList: Movie[]) => {
+    setMovies(updatedList);
+    localStorage.setItem('streamListMovies', JSON.stringify(updatedList));
+    console.log(updatedList);
+  };
 
+  // Saves the edited item in the list.
   const handleItemSave = (index: number, newTitle: string) => {
     const updatedMovies = [...movies];
     updatedMovies[index].title = newTitle;
     setMovies(updatedMovies);
   };
+
+  // Clears and deletes the list from localStorage.
+  const handleClearAndSave = (event: React.FormEvent) => {
+    event.preventDefault();
+    setMovies([]);
+    console.log('List deleted from localStorage.');
+    handleSave([]);
+  }
 
   return (
     <main>
@@ -71,14 +101,19 @@ const StreamList: React.FC = () => {
         </form>
       </div>
 
+        {/* If we have any movies in the list, we will display them and the buttons that interact with them. */}
         {movies.length > 0 && (
           <div className="movie-list-wrapper">
-            <MovieList
-              movies={movies}
-              onWatched={handleWatched}
-              onDelete={handleDelete}
-              onItemSave={handleItemSave}
-            />
+            {!isClient ? (
+              <p>Loading previous list...</p>
+            ) : (
+              <MovieList
+                movies={movies}
+                onWatched={handleWatched}
+                onDelete={handleDelete}
+                onItemSave={handleItemSave}
+              />
+            )}
             <div className="button-div button-bot">
               <button
                 type="button"
@@ -89,10 +124,17 @@ const StreamList: React.FC = () => {
               </button>
               <button
                 type="button"
-                onClick={handleSave}
+                onClick={() => handleSave(movies)}
                 className="form-button"
               >
                 Save List
+              </button>
+              <button
+                type="button"
+                onClick={handleClearAndSave}
+                className="form-button"
+              >
+                Clear & Save
               </button>
             </div>
           </div>

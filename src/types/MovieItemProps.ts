@@ -1,4 +1,4 @@
-import { Movie } from "./Movie"
+import { Movie } from "./MovieProps"
 
 export type MovieItemProps = Movie & {
     onWatched: () => void;

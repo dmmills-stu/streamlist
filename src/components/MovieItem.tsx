@@ -4,10 +4,13 @@ import { MovieItemProps } from "../types/MovieItemProps";
 const MovieItem: React.FC<MovieItemProps> = ({ title, watched, inEdit, onWatched, onDelete, onItemSave }) => {
   const [isEditing, setIsEditing] = useState(inEdit);
   const [editedTitle, setEditedTitle] = useState(title);
+
+  // Because the checkbox is not conditionally rendered, I decided to change the SVG path based on whether or not the box was checked.
   const checkboxPath = watched
     ? "m424-312 282-282-56-56-226 226-114-114-56 56 170 170ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"
     : "M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Z";
 
+  // Without this, the input when editing will not update, making it effectively read-only.
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditedTitle(e.target.value)
   }
@@ -28,6 +31,7 @@ const MovieItem: React.FC<MovieItemProps> = ({ title, watched, inEdit, onWatched
     setIsEditing(true);
   };
 
+  // If we are editing, change the icons for "Edit" and "Delete" to be "Save" and "Cancel." Also, change the title from a span element to an input to allow for adjustments.
   return (
     <li className="movie-item">
       <button onClick={onWatched} className="col-watched">

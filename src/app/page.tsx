@@ -17,7 +17,7 @@ const StreamList: React.FC = () => {
     event.preventDefault();
     if (streamItem.trim() !== '') {
       console.log('User Input:', streamItem);
-      setMovies([...movies, { title: streamItem, watched: false}]);
+      setMovies([...movies, { title: streamItem, watched: false, inEdit: false}]);
       setStreamItem('');
     } else {
       console.log('Error: Empty input submitted.');
@@ -37,17 +37,16 @@ const StreamList: React.FC = () => {
     );
   };
 
-  const handleEdit = (index: number) => {
-    const newTitle = prompt("Edit title", movies[index].title);
-    if (newTitle) {
-      setMovies((prev) =>
-        prev.map((movie, i) => (i === index ? { ...movie, title: newTitle } : movie))
-      );
-    }
-  };
-
   const handleDelete = (index: number) => {
     setMovies((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSave = () => {};
+
+  const handleItemSave = (index: number, newTitle: string) => {
+    const updatedMovies = [...movies];
+    updatedMovies[index].title = newTitle;
+    setMovies(updatedMovies);
   };
 
   return (
@@ -66,26 +65,37 @@ const StreamList: React.FC = () => {
               type="submit"
               className="form-button"
             >
-              Submit
-            </button>
-            <button
-              type="button"
-              onClick={handleClear}
-              className="form-button"
-            >
-              Clear List
+              Add Item
             </button>
           </div>
         </form>
       </div>
 
-        {movies && (
-          <MovieList
-            movies={movies}
-            onWatched={handleWatched}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+        {movies.length > 0 && (
+          <div className="movie-list-wrapper">
+            <MovieList
+              movies={movies}
+              onWatched={handleWatched}
+              onDelete={handleDelete}
+              onItemSave={handleItemSave}
+            />
+            <div className="button-div button-bot">
+              <button
+                type="button"
+                onClick={handleClear}
+                className="form-button"
+              >
+                Clear List
+              </button>
+              <button
+                type="button"
+                onClick={handleSave}
+                className="form-button"
+              >
+                Save List
+              </button>
+            </div>
+          </div>
         )}
     </main>
   );

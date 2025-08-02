@@ -1,5 +1,17 @@
+:root {
+    --icon-color: #000;
+    --rule-color: #afa89c;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --icon-color: #fff;
+    --rule-color: #9ca3af;
+  }
+}
+
 main {
-    min-height: 100vh;
     padding: 1rem;
 }
 
@@ -25,7 +37,7 @@ form {
 
 input {
     border: 1px solid;
-    border-color: #9ca3af;
+    border-color: var(--rule-color);
     padding: 0.5rem;
     border-radius: 0.375rem;
 }
@@ -67,22 +79,20 @@ input {
 }
 
 .movie-list {
-    width: 55%;
+    list-style: none;
     max-width: 50rem;
     margin-top: 2rem;
     margin-left: auto;
     margin-right: auto;
-}
-
-.movie-item {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 0.5rem;
+    display: grid;
+    grid-template-columns: 
+        min-content
+        1fr
+        min-content
+        min-content;
 }
 
 .movie-item button {
-    flex: 0 0 15%;
     min-width: 24px;
     background: none;
     border: none;
@@ -90,35 +100,48 @@ input {
     justify-items: center;
 }
 
-.movie-title {
-    flex: 0 0 55%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+.table-header > span {
+    font-weight: 700;
+    align-items: center;
+    text-align: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--rule-color);
+    margin-bottom: 1rem;
 }
 
-.button-title {
-    flex: 0 0 15%;
-    min-width: 24px;
-    font-weight: 700;
-    background: none;
-    border: none;
+.movie-item > .col-title {
+    margin-left: 0.5rem;
+}
+
+.movie-item > span {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.table-header,
+.movie-item {
+    display: contents;
+}
+
+.col-watched,
+.col-edit,
+.col-delete {
     text-align: center;
 }
 
-.title-title {
-    flex: 0 0 55%;
+.col-title {
+    align-self: center;
     overflow: hidden;
-    font-weight: 700;
-    white-space: nowrap;
     text-overflow: ellipsis;
-    text-align: left;
+    white-space: nowrap;
 }
 
-.title-list {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 0.5rem;
-    border-bottom: 1px solid #9ca3af;
+.button-bot {
+    margin-top: 2rem;
+}
+
+.col-watched > svg,
+.col-edit > svg,
+.col-delete > svg {
+    fill: var(--icon-color);
 }

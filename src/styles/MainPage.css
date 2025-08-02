@@ -126,6 +126,11 @@ input {
     margin-bottom: 0.25rem;
 }
 
+.react-icon {
+    height: 24px;
+    width: 24px;
+}
+
 .table-header,
 .movie-item {
     display: contents;

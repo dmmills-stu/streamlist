@@ -80,7 +80,7 @@ const StreamList: React.FC = () => {
   }
 
   return (
-    <main>
+    <main className="main-content">
       <h1>StreamList Application</h1>
       <div className="form-container">
         <form onSubmit={handleSubmit}>

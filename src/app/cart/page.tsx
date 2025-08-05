@@ -2,7 +2,7 @@ import '../../styles/CartPage.css'
 
 const CartPage = () => {
   return(
-    <main>
+    <main className="cart-page-main">
       <h2>Cart Page Coming Soon!</h2>
     </main>
   );

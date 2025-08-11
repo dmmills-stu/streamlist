@@ -36,11 +36,17 @@
     margin-right: auto;
 }
 
-.main-input {
+.main-input, .edit-input {
     border: 1px solid;
     border-color: var(--rule-color);
     padding: 0.5rem;
     border-radius: 0.375rem;
+}
+
+.edit-input {
+    height: min-content;
+    padding: 0.25rem;
+    align-self: center;
 }
 
 .form-container {

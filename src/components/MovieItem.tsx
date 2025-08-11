@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MovieItemProps } from "../types/MovieItemProps";
 import { IconContext } from "react-icons";
 import { MdEdit, MdCancel, MdDelete, MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
@@ -7,6 +7,11 @@ import { AiFillSave } from "react-icons/ai";
 const MovieItem: React.FC<MovieItemProps> = ({ title, watched, inEdit, onWatched, onDelete, onItemSave }) => {
   const [isEditing, setIsEditing] = useState(inEdit);
   const [editedTitle, setEditedTitle] = useState(title);
+
+  // Prevents the incorrect title being displayed for editing an item if items shift in the list.
+  useEffect(() => {
+    setEditedTitle(title);
+  }, [title]);
 
   // Without this, the input when editing will not update, making it effectively read-only.
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

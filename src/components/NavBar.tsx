@@ -15,7 +15,11 @@ const NavBar = () => {
         <ul className="nav-list">
           <div className="outside-spacer"></div>
           <li>
-            <Link href="/">
+            <Link href="/"
+            onClick={() => {
+              localStorage.removeItem("searchResults");
+              localStorage.removeItem("searchQuery");
+            }}>
               <IconContext.Provider value={{ className: "react-icon" }}>
                 <FaHome />
               </IconContext.Provider>
@@ -24,16 +28,24 @@ const NavBar = () => {
           </li>
           <div className="inside-spacer"></div>
           <li>
-            <Link href="/movies">
+            <Link href="/search"
+              onClick={() => {
+                localStorage.removeItem("streamListInput");
+            }}>
               <IconContext.Provider value={{ className: "react-icon" }}>
                 <MdMovie />
               </IconContext.Provider>
-              <span>Movies</span>
+              <span>Search Movies</span>
             </Link>
           </li>
           <div className="inside-spacer"></div>
           <li>
-            <Link href="/cart">
+            <Link href="/cart"
+              onClick={() => {
+                localStorage.removeItem("streamListInput");
+                localStorage.removeItem("searchResults");
+                localStorage.removeItem("searchQuery");
+            }}>
               <IconContext.Provider value={{ className: "react-icon" }}>
                 <FaShoppingCart />
               </IconContext.Provider>
@@ -42,7 +54,12 @@ const NavBar = () => {
           </li>
           <div className="inside-spacer"></div>
           <li>
-            <Link href="/about">
+            <Link href="/about"
+              onClick={() => {
+                localStorage.removeItem("streamListInput");
+                localStorage.removeItem("searchResults");
+                localStorage.removeItem("searchQuery");
+            }}>
               <IconContext.Provider value={{ className: "react-icon" }}>
                 <IoMdInformationCircle />
               </IconContext.Provider>

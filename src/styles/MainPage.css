@@ -16,7 +16,7 @@
     padding: 1rem;
 }
 
-h1 {
+.main-header {
     font-size: 1.875rem;
     font-weight: 700;
     margin-bottom: 1rem;
@@ -25,7 +25,7 @@ h1 {
     text-align: center;
 }
 
-form {
+.input-form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -36,7 +36,7 @@ form {
     margin-right: auto;
 }
 
-input {
+.main-input {
     border: 1px solid;
     border-color: var(--rule-color);
     padding: 0.5rem;
@@ -101,7 +101,7 @@ input {
     justify-items: center;
 }
 
-.movie-item > input {
+.movie-item > .main-input {
     border-color: var(--rule-color);
     height: min-content;
     margin-right: 1rem;

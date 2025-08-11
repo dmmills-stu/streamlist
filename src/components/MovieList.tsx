@@ -3,9 +3,9 @@ import MovieItem from "./MovieItem"
 
 type MovieListProps = {
   movies: Movie[];
-  onWatched: (index: number) => void;
-  onDelete: (index: number) => void;
-  onItemSave: (index: number, newTitle: string) => void;
+  onWatched: (index: string) => void;
+  onDelete: (index: string) => void;
+  onItemSave: (index: string, newTitle: string) => void;
 };
 
 const MovieList: React.FC<MovieListProps> = ({ movies, onWatched, onDelete, onItemSave }) => (
@@ -27,15 +27,16 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onWatched, onDelete, onIt
       </li>
     )}
 
-    {movies.map((movie, index) => (
+    {movies.map((movie) => (
       <MovieItem
-        key={index}
+        key={movie.id}
+        id={movie.id}
         title={movie.title}
         watched={movie.watched}
         inEdit={movie.inEdit}
-        onWatched={() => onWatched(index)}
-        onDelete={() => onDelete(index)}
-        onItemSave={(newTitle) => onItemSave(index, newTitle)}
+        onWatched={() => onWatched(movie.id)}
+        onDelete={() => onDelete(movie.id)}
+        onItemSave={(newTitle) => onItemSave(movie.id, newTitle)}
       />
     ))}
   </ul>

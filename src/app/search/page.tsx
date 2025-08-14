@@ -11,6 +11,7 @@ const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w200";
 // Helper for constructing TMDB search URLs
 const buildSearchUrl = (query: string) => {
   const key = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+  if (!key) return null;
   return `https://api.themoviedb.org/3/search/movie?api_key=${key}&query=${encodeURIComponent(
     query
   )}&include_adult=false`;
@@ -37,9 +38,18 @@ export default function SearchPage() {
       });
       return;
     }
+    const url = buildSearchUrl(query);
+    if (!url) {
+      toast.error("TMDB API key is missing! Please set NEXT_PUBLIC_TMDB_API_KEY.", {
+        duration: 4000,
+        style: { background: "#b91c1c", color: "#fff" },
+      });
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
-      const res = await fetch(buildSearchUrl(query));
+      const res = await fetch(url);
       const data = await res.json();
       localStorage.setItem("searchResults", JSON.stringify(data.results));
       localStorage.setItem("searchQuery", query);

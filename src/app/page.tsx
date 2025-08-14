@@ -8,104 +8,124 @@ import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
 
 const StreamList: React.FC = () => {
+  // State for the input field value
   const [streamItem, setStreamItem] = useState('');
+  // State for the list of movies
   const [movies, setMovies] = useState<Movie[]>([]);
+  // Used to avoid hydration issues in Next.js
   const [isClient, setIsClient] = useState(false);
 
   // I opted to use this instead of the useState to load the list to avoid hydration issues.
+  // Load saved movies and input from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem('streamListMovies');
-    const storedQuery = localStorage.getItem('streamListInput')
+    const storedQuery = localStorage.getItem('streamListInput');
     if (saved) setMovies(JSON.parse(saved));
     if (storedQuery) setStreamItem(JSON.parse(storedQuery));
     setIsClient(true);
   }, []);
 
-  // Without this, the input for adding a movie will be read-only.
+  // Update input field and sync to localStorage
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStreamItem(event.target.value);
     localStorage.setItem('streamListInput', JSON.stringify(event.target.value));
   };
 
-  // Adds a new movie to the list.
+  // Add a new movie to the list and sync to localStorage
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (streamItem.trim() !== '') {
       console.log('User Input:', streamItem);
-      setMovies([...movies, { id: uuidv4(), title: streamItem, watched: false, inEdit: false}]);
+      const updatedMovies = [...movies, { id: uuidv4(), title: streamItem, watched: false, inEdit: false}];
+      setMovies(updatedMovies);
+      localStorage.setItem('streamListMovies', JSON.stringify(updatedMovies));
       setStreamItem('');
+      localStorage.setItem('streamListInput', JSON.stringify(''));
     } else {
       console.log('Error: Empty input submitted.');
     }
   };
 
-  // Clears the list without saving.
+  // Clear the movie list with confirmation and sync to localStorage
   const handleClear = (event: React.FormEvent) => {
     event.preventDefault();
+    const ok = confirm('Are you sure you want to clear your list? This cannot be undone.');
+    if (!ok) return;
     setMovies([]);
+    localStorage.setItem('streamListMovies', JSON.stringify([]));
     toast.success("List cleared.", {
       duration: 3000,
       style: { background: "#444", color: "#fff" },
     });
     setStreamItem('');
-    localStorage.setItem('streamListInput', '');
+    localStorage.setItem('streamListInput', JSON.stringify(''));
     console.log('List cleared.');
   }
 
-  // Flip the boolean for "watched" when clicked.
+  // Toggle the "watched" status for a movie and sync to localStorage
   const handleWatched = (id: string) => {
-    setMovies((prev) =>
-      prev.map((movie) =>
+    setMovies((prev) => {
+      const updated = prev.map((movie) =>
         movie.id === id ? { ...movie, watched: !movie.watched } : movie
-      )
-    );
+      );
+      localStorage.setItem('streamListMovies', JSON.stringify(updated));
+      return updated;
+    });
   };
 
-  // Removes the movie from the list based on which one was clicked to be deleted.
+  // Remove a movie from the list and sync to localStorage
   const handleDelete = (id: string) => {
-    setMovies((prev) => prev.filter((movie) => movie.id !== id));
-  };
-
-  // Saves the list to localStorage.
-  const handleSave = (updatedList: Movie[]) => {
-    setMovies(updatedList);
-    localStorage.setItem('streamListMovies', JSON.stringify(updatedList));
-    toast.success("List saved!", {
-      duration: 3000,
-      style: { background: "#444", color: "#fff" },
+    setMovies((prev) => {
+      const updated = prev.filter((movie) => movie.id !== id);
+      localStorage.setItem('streamListMovies', JSON.stringify(updated));
+      return updated;
     });
-    console.log(updatedList);
   };
 
-  // Saves the edited item in the list.
+  // (Unused) Save the list to localStorage manually (functionality replaced by auto-sync)
+  // const handleSave = (updatedList: Movie[]) => {
+  //   setMovies(updatedList);
+  //   localStorage.setItem('streamListMovies', JSON.stringify(updatedList));
+  //   toast.success("List saved!", {
+  //     duration: 3000,
+  //     style: { background: "#444", color: "#fff" },
+  //   });
+  //   console.log(updatedList);
+  // };
+
+  // Save the edited movie title and sync to localStorage
   const handleItemSave = (id: string, newTitle: string) => {
-    setMovies((prev) =>
-      prev.map((movie) =>
+    setMovies((prev) => {
+      const updated = prev.map((movie) =>
         movie.id === id ? { ...movie, title: newTitle } : movie
-      )
-    );
+      );
+      localStorage.setItem('streamListMovies', JSON.stringify(updated));
+      return updated;
+    });
   };
 
-  // Clears and deletes the list from localStorage.
-  const handleClearAndSave = (event: React.FormEvent) => {
-    event.preventDefault();
-    const ok = confirm('Are you sure you want to clear your cart? This cannot be undone.');
-    if(!ok) return;
-    toast.success("List cleared and saved!", {
-      duration: 3000,
-      style: { background: "#444", color: "#fff" },
-    });
-    setStreamItem('');
-    localStorage.setItem('streamListInput', '');
-    setMovies([]);
-    console.log('List deleted from localStorage.');
-    handleSave([]);
-  }
+  // (Unused) Clear and save the list (functionality replaced by auto-sync)
+  // const handleClearAndSave = (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   const ok = confirm('Are you sure you want to clear your cart? This cannot be undone.');
+  //   if(!ok) return;
+  //   toast.success("List cleared and saved!", {
+  //     duration: 3000,
+  //     style: { background: "#444", color: "#fff" },
+  //   });
+  //   setStreamItem('');
+  //   localStorage.setItem('streamListInput', '');
+  //   setMovies([]);
+  //   console.log('List deleted from localStorage.');
+  //   handleSave([]);
+  // }
 
   return (
     <main className="main-content">
+      {/* Main header for the app */}
       <h1 className="main-header">StreamList Application</h1>
       <div className="form-container">
+        {/* Form for adding a new movie to the list */}
         <form onSubmit={handleSubmit} className="input-form">
           <input
             type="text"
@@ -125,44 +145,32 @@ const StreamList: React.FC = () => {
         </form>
       </div>
 
-        {/* If we have any movies in the list, we will display them and the buttons that interact with them. */}
-        {movies.length > 0 && (
-          <div className="movie-list-wrapper">
-            {!isClient ? (
-              <p>Loading previous list...</p>
-            ) : (
-              <MovieList
-                movies={movies}
-                onWatched={handleWatched}
-                onDelete={handleDelete}
-                onItemSave={handleItemSave}
-              />
-            )}
-            <div className="button-div button-bot">
-              <button
-                type="button"
-                onClick={handleClear}
-                className="form-button"
-              >
-                Clear List
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSave(movies)}
-                className="form-button"
-              >
-                Save List
-              </button>
-              <button
-                type="button"
-                onClick={handleClearAndSave}
-                className="form-button"
-              >
-                Clear & Save
-              </button>
-            </div>
+      {/* Display the movie list and clear button if there are movies */}
+      {movies.length > 0 && (
+        <div className="movie-list-wrapper">
+          {/* Show loading message until client-side hydration is complete */}
+          {!isClient ? (
+            <p>Loading previous list...</p>
+          ) : (
+            <MovieList
+              movies={movies}
+              onWatched={handleWatched}
+              onDelete={handleDelete}
+              onItemSave={handleItemSave}
+            />
+          )}
+          <div className="button-div button-bot">
+            {/* Button to clear the movie list */}
+            <button
+              type="button"
+              onClick={handleClear}
+              className="form-button"
+            >
+              Clear List
+            </button>
           </div>
-        )}
+        </div>
+      )}
     </main>
   );
 };

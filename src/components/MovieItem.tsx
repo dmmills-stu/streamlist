@@ -37,7 +37,7 @@ const MovieItem: React.FC<MovieItemProps> = ({ title, watched, inEdit, onWatched
   // If we are editing, change the icons for "Edit" and "Delete" to be "Save" and "Cancel." Also, change the title from a span element to an input to allow for adjustments.
   return (
     <li className="movie-item">
-      <button onClick={onWatched} className="col-watched">
+      <button onClick={onWatched} className="col-watched" aria-label={watched ? "Mark as unwatched" : "Mark as watched"}>
         <IconContext.Provider value={{ className: "react-icon" }}>
           { watched ? (
             <MdCheckBox />
@@ -53,6 +53,7 @@ const MovieItem: React.FC<MovieItemProps> = ({ title, watched, inEdit, onWatched
           onChange={handleTitleChange}
           placeholder="Enter a movie or show..."
           className="edit-input"
+          aria-label="Edit movie title"
         />
       ) : ( 
       <span className="movie-title col-title" style={{ textDecoration: watched ? "line-through" : "none" }}>
@@ -60,7 +61,7 @@ const MovieItem: React.FC<MovieItemProps> = ({ title, watched, inEdit, onWatched
       </span>
       )}
       {isEditing ? (
-        <button onClick={handleSave} className="col-edit">
+        <button onClick={handleSave} className="col-edit" aria-label="Save movie title">
           <span>
             Save
           </span>
@@ -69,14 +70,14 @@ const MovieItem: React.FC<MovieItemProps> = ({ title, watched, inEdit, onWatched
           </IconContext.Provider>
         </button>
       ) : (
-        <button onClick={handleEdit} className="col-edit">
+        <button onClick={handleEdit} className="col-edit" aria-label="Edit movie title">
           <IconContext.Provider value={{ className: "react-icon" }}>
             <MdEdit />
           </IconContext.Provider>
         </button>
       )}
       {isEditing ? (
-        <button onClick={handleCancel} className="col-delete">
+        <button onClick={handleCancel} className="col-delete" aria-label="Cancel editing">
           <span>
             Cancel
           </span>
@@ -85,7 +86,7 @@ const MovieItem: React.FC<MovieItemProps> = ({ title, watched, inEdit, onWatched
           </IconContext.Provider>
         </button>
       ) : (
-        <button onClick={onDelete} className="col-delete">
+        <button onClick={onDelete} className="col-delete" aria-label="Delete movie">
           <IconContext.Provider value={{ className: "react-icon" }}>
             <MdDelete />
           </IconContext.Provider>

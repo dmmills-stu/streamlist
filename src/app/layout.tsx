@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar"
 import { Toaster } from "react-hot-toast";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +16,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "StreamList App",
-  description: "Created by David Mills using create-next-app.",
+  title: "StreamList",
+  description: "Track and manage your movies and shows.",
+  manifest: "/manifest.json",
+};
+
+export const viewport = {
+  themeColor: "#872323"
 };
 
 export default function RootLayout({
@@ -31,6 +37,8 @@ export default function RootLayout({
       >
         <div className="app-container">
           <NavBar />
+          {/* Register the service worker for offline support and caching */}
+          <ServiceWorkerRegister />
           <main className="main-content">{children}</main>
           <Toaster position="top-left" reverseOrder={false} />
         </div>
